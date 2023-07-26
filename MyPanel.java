@@ -18,22 +18,30 @@ import java.awt.Font;
 public class MyPanel extends JPanel implements KeyListener,ActionListener
 {
   JButton doneButton = new JButton("Done");
+  JButton AButton = new JButton("A");
   boolean reading;
   Font f1;
   Question q1 = new Question("What is the correct?", new String[]{"Z", "X", "Y", "L"}, 2);
-  Text testText = new Text("This is a test to see if the button functionality is completely working #great and good and all that stuff let's see try pressing the button, #because I don't know what else to write here", new Question[]{q1});
-
+  Question q2 = new Question("Another question:", new String[]{"A", "B", "C", "D"}, 2);
+  Text testText = new Text("This is a test to see if the button functionality is completely working #great and good and all that stuff let's see try pressing the button, #because I don't know what else to write here", new Question[]{q1, q2});
+  int currQuestion;
+  String letters = "ABCD";
 
 	public MyPanel(){
     setLayout(null);  //JPanel method that initializes the layout    
 
     reading = true;
+    currQuestion = 0;
     f1 = new Font("Segoe UI", Font.PLAIN,  35);
 
     doneButton.setBounds(265, 600, 100, 50);
+    AButton.setBounds(265, 600, 100, 50);
     this.add(doneButton);
+    this.add(AButton);
     doneButton.setVisible(true);
+    AButton.setVisible(false);
     doneButton.addActionListener(this);
+    AButton.addActionListener(this);
     
     addKeyListener(this);
     setFocusable(true);
@@ -52,13 +60,12 @@ public class MyPanel extends JPanel implements KeyListener,ActionListener
     if (reading) {
       drawStringPlus(g, testText.text, 50, 50);
     }
+    // display questions and answers
     else {
-      for (int i=0; i<testText.questionsList.length; i++) {
-        g.drawString(testText.questionsList[i].content, 50, 50);
-        for (int j=0; j<4; j++) {
-          g.drawString(testText.questionsList[i].answerOptions[j], 50, 200+(40*j));
+        g.drawString(testText.questionsList[currQuestion].content, 50, 50);
+        for (int i=0; i<4; i++) {
+          g.drawString(letters.charAt(i) + ": " + testText.questionsList[currQuestion].answerOptions[i], 50, 200+(40*i));
         }
-      }
     }
       
     }
@@ -79,6 +86,17 @@ public class MyPanel extends JPanel implements KeyListener,ActionListener
 		// check to see which button was clicked
 		if (event.getSource() == doneButton) {
       reading = false;
+      doneButton.setVisible(false);
+      AButton.setVisible(true);
+		}
+    if (event.getSource() == AButton) {
+      currQuestion++;
+      if (currQuestion > testText.questionsList.length-1) {
+        reading = true;
+        doneButton.setVisible(true);
+        AButton.setVisible(false);
+        currQuestion = 0;
+      }
 		}
     
     requestFocusInWindow();
