@@ -18,31 +18,48 @@ import java.awt.Font;
 public class MyPanel extends JPanel implements KeyListener,ActionListener
 {
   JButton doneButton = new JButton("Done");
-  JButton AButton = new JButton("A");
+  final JButton AButton = new JButton("A");
+  final JButton BButton = new JButton("B");
+  final JButton CButton = new JButton("C");
+  final JButton DButton = new JButton("D");
+
   boolean reading;
   Font f1;
-  Question q1 = new Question("What is the correct?", new String[]{"Z", "X", "Y", "L"}, 2);
-  Question q2 = new Question("Another question:", new String[]{"A", "B", "C", "D"}, 2);
+  Question q1 = new Question("What is the correct?", new String[]{"Z", "X", "Y", "L"}, "C");
+  Question q2 = new Question("Another question:", new String[]{"A", "B", "C", "D"}, "A");
   Text testText = new Text("This is a test to see if the button functionality is completely working #great and good and all that stuff let's see try pressing the button, #because I don't know what else to write here", new Question[]{q1, q2});
   int currQuestion;
   String letters = "ABCD";
+  int score;
 
 	public MyPanel(){
     setLayout(null);  //JPanel method that initializes the layout    
 
     reading = true;
     currQuestion = 0;
+    score = 0;
     f1 = new Font("Segoe UI", Font.PLAIN,  35);
 
     doneButton.setBounds(265, 600, 100, 50);
     AButton.setBounds(265, 600, 100, 50);
+    BButton.setBounds(375, 600, 100, 50);
+    CButton.setBounds(485, 600, 100, 50);
+    DButton.setBounds(595, 600, 100, 50);
     this.add(doneButton);
     this.add(AButton);
+    this.add(BButton);
+    this.add(CButton);
+    this.add(DButton);
     doneButton.setVisible(true);
-    AButton.setVisible(false);
+    setAnswerButtonVisibility(false);
     doneButton.addActionListener(this);
     AButton.addActionListener(this);
+    BButton.addActionListener(this);
+    CButton.addActionListener(this);
+    DButton.addActionListener(this);
     
+
+
     addKeyListener(this);
     setFocusable(true);
     setFocusTraversalKeysEnabled(false);
@@ -67,6 +84,9 @@ public class MyPanel extends JPanel implements KeyListener,ActionListener
           g.drawString(letters.charAt(i) + ": " + testText.questionsList[currQuestion].answerOptions[i], 50, 200+(40*i));
         }
     }
+
+    //display score
+    g.drawString("Score: " + score,1050,710 );
       
     }
 
@@ -87,16 +107,20 @@ public class MyPanel extends JPanel implements KeyListener,ActionListener
 		if (event.getSource() == doneButton) {
       reading = false;
       doneButton.setVisible(false);
-      AButton.setVisible(true);
+          setAnswerButtonVisibility(true);
+
 		}
     if (event.getSource() == AButton) {
-      currQuestion++;
-      if (currQuestion > testText.questionsList.length-1) {
-        reading = true;
-        doneButton.setVisible(true);
-        AButton.setVisible(false);
-        currQuestion = 0;
-      }
+      handleAnswer("A");
+		}
+    if (event.getSource() == BButton) {
+        handleAnswer("B");
+		}
+    if (event.getSource() == CButton) {
+        handleAnswer("C");
+		}
+    if (event.getSource() == DButton) {
+        handleAnswer("D");
 		}
     
     requestFocusInWindow();
@@ -122,6 +146,27 @@ public class MyPanel extends JPanel implements KeyListener,ActionListener
     for (int i=0; i<arr.length; i++) {
       g.drawString(arr[i], x, y+(i*45));
     }
+  }
+
+  public void setAnswerButtonVisibility(boolean set) {
+    AButton.setVisible(set);
+    BButton.setVisible(set);
+    CButton.setVisible(set);
+    DButton.setVisible(set);
+  }
+
+  public void handleAnswer(String answer) {
+      if ( (testText.questionsList[currQuestion].answer).equals(answer) ) {
+        score++;
+      }
+      currQuestion++;
+      if (currQuestion > testText.questionsList.length-1) {
+        reading = true;
+        doneButton.setVisible(true);
+        setAnswerButtonVisibility(false);
+
+        currQuestion = 0;
+      }
   }
 
 

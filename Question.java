@@ -2,8 +2,8 @@ public class Question {
 
     String content;
     String[] answerOptions;
-    int answer;
-    public Question(String content, String[] answerOptions, int answer) {
+    String answer;
+    public Question(String content, String[] answerOptions, String answer) {
         this.content = content;
         this.answerOptions = answerOptions;
         this.answer = answer;
